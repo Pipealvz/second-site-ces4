@@ -15,7 +15,7 @@ const Registermoto = () => {
 
     const [arrayMoto, setArrayMoto] = useState([]);//Almacenar las motos por usuario
 
-    const [controllerForm, setControllerForm] = useState({ id: '', placa: '', cilindraje: '', marca: '', estado: 'libre' });//Controlar los eventos del formulario.
+    const [controllerForm, setControllerForm] = useState({ id: '', placa: '', comodin: '', marca: '', estado: 'libre' });//Controlar los eventos del formulario.
 
     const [arrayEdit, setArrayEdit] = useState(null);
 
@@ -28,13 +28,13 @@ const Registermoto = () => {
             const originalArrayEdit = [...arrayMoto] // almacena el array
             const moto = originalArrayEdit.find(moto => moto.id === arrayEdit); //Filtra por id de moto
             moto.placa = controllerForm.placa;
-            moto.cilindraje = controllerForm.cilindraje;
+            moto.comodin = controllerForm.comodin;
             moto.marca = controllerForm.marca;
             setArrayMoto(originalArrayEdit);//capturamos el array modificado
             setArrayEdit(null);
-            setControllerForm({ id: '', placa: '', cilindraje: '', marca: '', estado: 'libre' });
+            setControllerForm({ id: '', placa: '', comodin: '', marca: '', estado: 'libre' });
         } else {
-            if (controllerForm.placa !== '' && controllerForm.cilindraje !== '' && controllerForm.marca !== '') {
+            if (controllerForm.placa !== '' && controllerForm.comodin !== '' && controllerForm.marca !== '') {
                 //Agregar moto
                 const list = controllerForm;
                 list.id = uuidv4();
@@ -45,7 +45,7 @@ const Registermoto = () => {
                     confirmButtonText: 'Ok'
                 });
                 setArrayMoto([...arrayMoto, list]);
-                setControllerForm({ placa: '', cilindraje: '', marca: '', estado: 'libre' });
+                setControllerForm({ placa: '', comodin: '', marca: '', estado: 'libre' });
                 console.log(list)
             } else {
                 Swal.fire({
@@ -66,7 +66,7 @@ const Registermoto = () => {
 
     const handleSubmitEdit = (id) => {
         const moto = arrayMoto.find(moto => moto.id === id);
-        setControllerForm({ placa: moto.placa, cilindraje: moto.cilindraje, marca: moto.marca, estado: moto.estado });
+        setControllerForm({ placa: moto.placa, comodin: moto.comodin, marca: moto.marca, estado: moto.estado });
         setArrayEdit(id);
         //const lastMov = parseFloat(todo.valor);
     }
@@ -94,7 +94,7 @@ const Registermoto = () => {
                             <hr />
                             <div className="d-flex justify-content-between w-100">
                                 <div className="d-flex w-auto justify-content-center"> <h4> Cylinder: </h4> </div>
-                                <input className={`form-control w-50 ${!controllerForm.cilindraje ? 'is-invalid' : 'is-valid'}`} type="text" placeholder="Capacity Motorcycle" name="cilindraje" value={controllerForm.cilindraje} />
+                                <input className={`form-control w-50 ${!controllerForm.comodin ? 'is-invalid' : 'is-valid'}`} type="text" placeholder="Capacity Motorcycle" name="comodin" value={controllerForm.comodin} />
                             </div>
                             <hr />
                             <div className="d-flex justify-content-between w-100">

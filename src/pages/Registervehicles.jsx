@@ -1,15 +1,19 @@
 import { useState } from "react";
 import Swal from 'sweetalert2';
 import { v4 as uuidv4 } from 'uuid';
+import SearchVehicle from "./SearchVehicle";
+import { useLogin } from "../context/LoginProvider";
+
 
 const Registervehicles = () => {
 
+    const { addVehicle, vehicle } = useLogin();
+
     const [arrayVehicle, setArrayVehicle] = useState([]);//Almacenar las motos por usuario
 
-    const [controllerForm, setControllerForm] = useState({ id: '', placa: '', marca: '', modelo: '', estado: 'libre' });//Controlar los eventos del formulario.
+    const [controllerForm, setControllerForm] = useState({ id: '', placa: '', marca: '', comodin: '', tipo: '', document: '', estado: true });//Controlar los eventos del formulario.
 
     const [arrayEdit, setArrayEdit] = useState(null);
-
 
     //Handle block
 
@@ -20,29 +24,46 @@ const Registervehicles = () => {
             const car = originalArrayEdit.find(car => car.id === arrayEdit); //Filtra por id de carro
             car.placa = controllerForm.placa;
             car.marca = controllerForm.marca;
-            car.modelo = controllerForm.modelo;
+            car.comodin = controllerForm.comodin;
+            car.estado = controllerForm.estado;
+            car.document = controllerForm.document;
+            car.tipo = controllerForm.tipo;
             setArrayVehicle(originalArrayEdit);//capturamos el array modificado
+            <SearchVehicle data={originalArrayEdit} />
             setArrayEdit(null);
-            setControllerForm({ id: '', placa: '', modelo: '', marca: '', estado: 'libre' });
+            setControllerForm({ id: '', placa: '', comodin: '', marca: '', tipo: '', document: '', estado: true });
         } else {
-            if (controllerForm.placa !== '' && controllerForm.modelo !== '' && controllerForm.marca !== '') {
-                //Agregar moto
-                const list = controllerForm;
-                list.id = uuidv4();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Saved',
-                    text: 'Vehicle saved!',
-                    confirmButtonText: 'Ok'
-                });
-                setArrayVehicle([...arrayVehicle, list]);
-                setControllerForm({ placa: '', modelo: '', marca: '', estado: 'libre' });
-                console.log(list);
+            if (controllerForm.placa !== '' && controllerForm.comodin !== '' && controllerForm.marca !== '') {
+                //Agregar vehiculo
+                if (arrayVehicle.some(car => car.placa === controllerForm.placa)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'This Vehicle exists',
+                        confirmButtonText: 'Ok'
+                    });
+                } else {
+                    const list = controllerForm;
+                    const lastType = list.tipo;
+                    list.id = uuidv4();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Saved',
+                        text: 'Vehicle saved!',
+                        confirmButtonText: 'Ok'
+                    });
+                    setArrayVehicle([...arrayVehicle, list]);
+                    setControllerForm({ placa: '', comodin: '', marca: '', tipo: lastType, document: '', estado: true });
+                    console.log(list);
+                    addVehicle({ list });
+                    console.log(vehicle);
+                    <SearchVehicle data={list} />
+                }
             } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: `Please, verify the data send`,
+                    text: `Please verify the submitted data`,
                     confirmButtonText: 'Ok'
                 });
             }
@@ -57,7 +78,7 @@ const Registervehicles = () => {
 
     const handleSubmitEdit = (id) => {
         const car = arrayVehicle.find(car => car.id === id);
-        setControllerForm({ placa: car.placa, modelo: car.modelo, marca: car.marca, estado: car.estado });
+        setControllerForm({ placa: car.placa, comodin: car.comodin, marca: car.marca, estado: car.estado, document: car.document, tipo: car.tipo });
         setArrayEdit(id);
         console.log(id)
     }
@@ -80,13 +101,13 @@ const Registervehicles = () => {
                         <form className="" onSubmit={handleSubmitVehicle} onChange={handleChangeForm}>
                             <br />
                             <div className="d-flex justify-content-between w-100">
-                                <div className="d-flex w-auto justify-content-center"> <h4> Vehice Plate: </h4> </div>
+                                <div className="d-flex w-auto justify-content-center"> <h4> Vehicle Plate: </h4> </div>
                                 <input className={`form-control w-50 ${!controllerForm.placa ? 'is-invalid' : 'is-valid'}`} type="text" placeholder="Vehicle plate" name="placa" value={controllerForm.placa} />
                             </div>
                             <hr />
                             <div className="d-flex justify-content-between w-100">
-                                <div className="d-flex w-auto justify-content-center"> <h4> Model: </h4> </div>
-                                <input className={`form-control w-50 ${!controllerForm.modelo ? 'is-invalid' : 'is-valid'}`} type="text" placeholder="Vehicle model" name="modelo" value={controllerForm.modelo} />
+                                <div className="d-flex w-auto justify-content-center"> <h4> Model/Cylinder: </h4> </div>
+                                <input className={`form-control w-50 ${!controllerForm.comodin ? 'is-invalid' : 'is-valid'}`} type="text" placeholder="Vehicle model" name="comodin" value={controllerForm.comodin} />
                             </div>
                             <hr />
                             <div className="d-flex justify-content-between w-100">
@@ -95,9 +116,15 @@ const Registervehicles = () => {
                             </div>
                             <hr />
                             <div className="d-flex justify-content-between w-100">
-                                <div className="d-flex w-auto justify-content-center"> <h4> Status: </h4> </div>
-                                <select className="form-control w-50" name="estado" disabled>
-                                    <option value="Ingreso">Free</option>
+                                <div className="d-flex w-auto justify-content-center"> <h4> User Document: </h4> </div>
+                                <input className={`form-control w-50 ${!controllerForm.document ? 'is-invalid' : 'is-valid'}`} type="text" placeholder="User document" name="document" value={controllerForm.document} />
+                            </div>
+                            <hr />
+                            <div className="d-flex justify-content-between w-100">
+                                <div className="d-flex w-auto justify-content-center"> <h4> Type: </h4> </div>
+                                <select className="form-control w-50" name="tipo" value={controllerForm.tipo}>
+                                    <option value="Carro">Car</option>
+                                    <option value="Moto">Motorcycle</option>
                                 </select>
                             </div>
                             <hr />
@@ -112,27 +139,39 @@ const Registervehicles = () => {
                             <h3> Vehicles </h3>
                             <span className="d-flex bagde bg-primary rounded-pill align-items-center justify-content-center w-auto p-2 text-light">{arrayVehicle.length}</span>
                         </div>
-                        <hr />
-                        {
-                            arrayVehicle.length === 0 ? (
-                                <p className="d-flex w-auto text-center text-secondary fs-1">Don't saved Vehicles</p>
-                            ) :
-                                arrayVehicle.map((car) => (
-                                    <div key={car.id} className="d-flex col-12 mb-2">
-                                        <div className="d-flex col-4 justify-content-around">
-                                            <input type="submit" className="btn btn-danger h-auto" value="Delete" onClick={() => handleSubmitDelete(car.id)} />
-                                            <input type="button" className="btn btn-warning h-auto" value="Edit" onClick={() => handleSubmitEdit(car.id)} />
-                                        </div>
-                                        <div className="col-2"><h5> {car.placa} </h5></div>
-                                        <div className="col-2"><h5> {car.modelo} </h5></div>
-                                        <div className="w-100">
-                                            <span className={`d-flex bagde rounded-pill bg-success align-items-center justify-content-center w-auto p-2 text-light`}>
-                                                {car.estado}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))
-                        }
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Actions</th>
+                                    <th scope="col">Plate</th>
+                                    <th scope="col">Model/Cylinder</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">User id</th>
+                                </tr>
+                            </thead>
+                            {vehicle.map(car => {
+                                <p>{car.id}</p>
+                            })}
+                            <tbody >
+                                {
+                                    arrayVehicle.length === 0 ? (
+                                        <p className="d-flex w-100 text-center text-secondary fs-1">No vehicles added</p>
+                                    ) :
+                                        arrayVehicle.map((car) => (
+                                            <tr key={car.id}>
+                                                <th scope="row">
+                                                    <input type="submit" className="btn btn-danger h-auto w-50" value="Delete" onClick={() => handleSubmitDelete(car.id)} />
+                                                    <input type="button" className="btn btn-warning h-auto w-50" value="Edit" onClick={() => handleSubmitEdit(car.id)} />
+                                                </th>
+                                                <td>{car.placa}</td>
+                                                <td>{car.comodin}</td>
+                                                <td>{car.tipo}</td>
+                                                <td>{car.document}</td>
+                                            </tr>
+                                        ))
+                                }
+                            </tbody>
+                        </table>
                     </form>
                 </div>
             </div>

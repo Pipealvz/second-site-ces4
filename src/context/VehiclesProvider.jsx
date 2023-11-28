@@ -3,27 +3,28 @@ import { createContext, useContext } from "react";
 
 const VehicleContext = createContext();
 
-export const vehicleProvider = ({ children }) => {
-
-    const [arrayVehicle, setArrayVehicle] = useState([]);//Almacenar las motos por usuario
+export const VehicleProvider = ({ children }) => {
+    const [arrayVehicle2, setArrayVehicle] = useState([null]);//Almacenar las motos por usuario
 
     const addVehicle = (veh) => {
-        setArrayVehicle((vehicle) => ([...arrayVehicle, vehicle]));
+        setArrayVehicle((vehicle) => ([...vehicle, veh]));
     }
+
     return (
         <VehicleContext.Provider value={{
-            addVehicle
+            arrayVehicle2, addVehicle
         }}>
             {children}
         </VehicleContext.Provider>
     );
 };
 
-export const useVehicle = () => {
-    const context = useContext(vehicleProvider);
+
+export const UseVehicle = () => {
+    const context = useContext(VehicleProvider);
     if (!context) {
         throw new Error(
-            "Error verify Context..."
+            "Verify Context ..."
         );
     };
     return context;
