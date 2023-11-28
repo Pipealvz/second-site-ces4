@@ -1,0 +1,5 @@
+.active:hover {
+    background-color: rgb(112, 23, 163);
+    border-radius: 10%;
+    color: white !important;
+}
