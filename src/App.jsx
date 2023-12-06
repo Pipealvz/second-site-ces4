@@ -7,6 +7,7 @@ import NoFoundPage from './pages/NoFoundPage';
 import Menu from './components/Menu';
 import { LoginProvider } from './context/LoginProvider';
 import SearchVehicle from './pages/SearchVehicle';
+import { VehicleProvider } from './context/VehiclesProvider';
 
 function App() {
 
@@ -15,17 +16,19 @@ function App() {
       <BrowserRouter>
         <LoginProvider>
           <Menu />
-          <Routes>
-            <Route path="/" element={
-              <h3 className='container text-center'>Welcome, please log in to start using this app.</h3>
-            } />
-            <Route path='/SearchVehicle' element={<SearchVehicle />} />
-            <Route path="/RegisterVehicle" element={<Registervehicle />} />
-            <Route path="/Login" element={<Login />} />
-            <Route path="/AddVehicle" element={<Addvehicle />} />
-            <Route path="/ViewVehiclesParking" element={<ViewParking />} />
-            <Route path="/NoFoundPage" element={<NoFoundPage />} />
-          </Routes>
+          <VehicleProvider>
+            <Routes>
+              <Route path="/" element={
+                <h3 className='container text-center'>Welcome, please log in to start using this app.</h3>
+              } />
+              <Route path='/SearchVehicle' element={<SearchVehicle />} />
+              <Route path="/RegisterVehicle" element={<Registervehicle />} />
+              <Route path="/AddVehicle" element={<Addvehicle />} />
+              <Route path="/Login" element={<Login />} />
+              <Route path="/ViewVehiclesParking" element={<ViewParking />} />
+              <Route path="/NoFoundPage" element={<NoFoundPage />} />
+            </Routes>
+          </VehicleProvider>
         </LoginProvider>
       </BrowserRouter>
     </>

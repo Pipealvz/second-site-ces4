@@ -1,31 +1,45 @@
-import { useState } from 'react';
-import { createContext, useContext } from "react";
+import { createContext, useState } from "react";
+import Swal from "sweetalert2";
 
-const VehicleContext = createContext();
+export const VehicleContext = createContext();
 
 export const VehicleProvider = ({ children }) => {
-    const [arrayVehicle2, setArrayVehicle] = useState([null]);//Almacenar las motos por usuario
 
-    const addVehicle = (veh) => {
-        setArrayVehicle((vehicle) => ([...vehicle, veh]));
+    const [vehicle, setVehicle] = useState([])
+    const [vehicleF, setVehicleF] = useState([])
+    const [parking, setParking] = useState([])
+
+    console.log(parking);
+
+    const addVeh = (veh) => { setVehicle((listVeh) => [...listVeh, veh]) };
+    console.log(vehicle);
+
+    const searchUserVehicle = (documento) => {
+        //console.log(documento)
+        const findVehicle = vehicle.filter(veh => veh.documento === documento);
+        setVehicleF(findVehicle);
     }
 
+    const deleteVehicle = (placa) => {
+        const deleteVeh = vehicle.filter(veh => veh.placa !== placa);
+        setVehicle(deleteVeh);
+        //console.log(deleteVeh)
+    }
+
+    const updateVehicle = (vehi) => {
+        if (vehi !== -1) {
+            const libre = false
+            const array = [...vehicle]
+            setVehicle(...vehicle, array[vehi].libre = libre);
+        }
+    }
+
+    //console.log("FIND VEHICLE:", vehicleF);
+
     return (
-        <VehicleContext.Provider value={{
-            arrayVehicle2, addVehicle
-        }}>
+
+        <VehicleContext.Provider value={{ vehicle, addVeh, searchUserVehicle, vehicleF, deleteVehicle, updateVehicle }}>
             {children}
         </VehicleContext.Provider>
-    );
-};
-
-
-export const UseVehicle = () => {
-    const context = useContext(VehicleProvider);
-    if (!context) {
-        throw new Error(
-            "Verify Context ..."
-        );
-    };
-    return context;
-};
+    )
+}

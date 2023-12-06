@@ -9,12 +9,6 @@ export const LoginProvider = ({ children }) => {
 
   const [useUser, setuseUser] = useState(null);
 
-  const [vehicle, setVehicle] = useState([]);
-
-  const addVehicle = (veh) => {
-    setVehicle((vehicles) => [...vehicles, veh]);
-  }
-
   const userProvider = "admin";
   const passwordProvider = "7z@Pq9Fv*YcXgT!";
   const navigate = useNavigate();
@@ -25,10 +19,10 @@ export const LoginProvider = ({ children }) => {
       Swal.fire({
         icon: 'success',
         title: 'Login!',
-        text: 'Your´re login!',
+        text: `Your're login! ${username}`,
         confirmButtonText: 'Ok'
       });
-      navigate('/SearchVehicle');
+      navigate('/RegisterVehicle');
     } else {
       Swal.fire({
         icon: 'error',
@@ -50,7 +44,7 @@ export const LoginProvider = ({ children }) => {
   }
 
   return (
-    <LoginContext.Provider value={{ useUser, login, logout, addVehicle, vehicle }}>
+    <LoginContext.Provider value={{ useUser, login, logout }}>
       {children}
     </LoginContext.Provider>
   );
